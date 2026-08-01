@@ -1,4 +1,4 @@
-// Конфигурация
+// Конфигурация заданий
 const DAILY_QUESTS = [
     { id: 'pushups', name: 'Отжимания 3x20', exp: 30 },
     { id: 'squats', name: 'Приседания 3x25', exp: 25 },
@@ -7,7 +7,7 @@ const DAILY_QUESTS = [
     { id: 'meditation', name: 'Медитация 10 минут', exp: 20 }
 ];
 
-// Инициализация данных
+// Инициализация данных пользователя
 if (!localStorage.getItem('user')) {
     const defaultUser = {
         level: 1,
@@ -25,7 +25,6 @@ let user = JSON.parse(localStorage.getItem('user'));
 // Проверка нового дня (сброс заданий)
 const today = new Date().toDateString();
 if (user.lastDate !== today) {
-    // Если не вчера – обнуляем стрик
     const yesterday = new Date(Date.now() - 86400000).toDateString();
     if (user.lastDate !== yesterday) {
         user.streak = 0;
@@ -35,12 +34,12 @@ if (user.lastDate !== today) {
     saveUser();
 }
 
-// Функция сохранения
+// Сохранение в localStorage
 function saveUser() {
     localStorage.setItem('user', JSON.stringify(user));
 }
 
-// Расчет ранга
+// Определение ранга по уровню
 function calculateRank() {
     if (user.level >= 50) return 'S';
     if (user.level >= 30) return 'A';
@@ -50,43 +49,63 @@ function calculateRank() {
     return 'E';
 }
 
-// Обработка выполнения квеста
+// Показать красивое сообщение
+function showSystemMessage(text, callback) {
+    const msgBox = document.getElementById('system-message');
+    const msgText = msgBox.querySelector('.msg-text');
+    msgText.textContent = text;
+    msgBox.classList.add('show');
+    
+    const btn = msgBox.querySelector('button');
+    btn.onclick = () => {
+        msgBox.classList.remove('show');
+        if (callback) callback();
+    };
+    
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+}
+
+// Выполнение квеста
 function completeQuest(questId) {
-    if (user.questsCompletedToday.includes(questId)) return; // уже сделан
+    if (user.questsCompletedToday.includes(questId)) return;
     
     const quest = DAILY_QUESTS.find(q => q.id === questId);
     user.exp += quest.exp;
     user.questsCompletedToday.push(questId);
-
+    
     // Проверка повышения уровня
     const expForNextLevel = user.level * 100;
     if (user.exp >= expForNextLevel) {
         user.exp -= expForNextLevel;
         user.level++;
         user.rank = calculateRank();
-        alert(`⚡ Поздравляем! Уровень повышен до ${user.level}. Ранг: ${user.rank}`);
-        // можно добавить вибрацию
-        if (navigator.vibrate) navigator.vibrate(200);
+        showSystemMessage(`⚡ Уровень повышен до ${user.level}. Ранг: ${user.rank}`);
     }
-
-    // Проверка, все ли квесты выполнены (для стрика)
+    
+    // Проверка стрика (если все квесты выполнены)
     if (user.questsCompletedToday.length === DAILY_QUESTS.length) {
-        if (user.lastDate !== today) { // первый раз сегодня
+        if (user.streak === 0 || user.lastDate !== today) {
             user.streak++;
         }
     }
-
+    
     saveUser();
     render();
 }
 
-// Рендеринг интерфейса
+// Отрисовка интерфейса
 function render() {
     document.getElementById('level').textContent = user.level;
     document.getElementById('exp').textContent = user.exp;
-    document.getElementById('streak').textContent = user.streak;
+    document.getElementById('exp-max').textContent = user.level * 100;
+    document.getElementById('streak').textContent = `🔥 ${user.streak}`;
     document.getElementById('rank').textContent = `Ранг: ${user.rank}`;
-
+    
+    // Прогресс-бар
+    const expPercent = (user.exp / (user.level * 100)) * 100;
+    document.getElementById('exp-bar').style.width = expPercent + '%';
+    
+    // Список заданий
     const questList = document.getElementById('quest-list');
     questList.innerHTML = DAILY_QUESTS.map(quest => {
         const completed = user.questsCompletedToday.includes(quest.id);
@@ -102,13 +121,10 @@ function render() {
     }).join('');
 }
 
-// Функция штрафа (пример: если до 23:00 не выполнил все, срабатывает напоминание)
-// Можно добавить позже, сейчас просто стрик сбрасывается при неполном выполнении.
-
-// Первоначальный рендер
+// Первый рендер
 render();
 
-// Регистрация Service Worker для PWA
+// Регистрация Service Worker (для PWA)
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
 }

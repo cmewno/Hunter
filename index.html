@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Система Охотника</title>
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,20 +16,38 @@
 </head>
 <body>
     <div id="app">
+        <!-- Системное сообщение (вместо alert) -->
+        <div id="system-message" class="hidden">
+            <div class="msg-text"></div>
+            <button>Принять</button>
+        </div>
+
         <header>
-            <h1>⚔️ Система Охотника</h1>
-            <div id="rank">Ранг: E</div>
+            <h1 class="neon-text">⚔️ Система Охотника</h1>
+            <div id="rank" class="rank-badge">Ранг: E</div>
         </header>
         <main>
-            <section id="daily-quests">
+            <section id="daily-quests" class="panel">
                 <h2>📋 Ежедневные задания</h2>
                 <ul id="quest-list"></ul>
             </section>
-            <section id="stats">
+            <section id="stats" class="panel">
                 <h2>📊 Статистика</h2>
-                <p>Уровень: <span id="level">1</span></p>
-                <p>Опыт: <span id="exp">0</span>/100</p>
-                <p>Дней подряд: <span id="streak">0</span></p>
+                <div class="stat-row">
+                    <span class="stat-label">Уровень</span>
+                    <span id="level" class="stat-value">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Опыт</span>
+                    <span><span id="exp">0</span> / <span id="exp-max">100</span></span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Дней подряд</span>
+                    <span id="streak" class="streak-fire">🔥 0</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="exp-bar" class="progress-fill" style="width: 0%"></div>
+                </div>
             </section>
         </main>
         <footer>

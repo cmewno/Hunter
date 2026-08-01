@@ -1,42 +1,265 @@
-body {
-    background: #0a0a0f;
-    color: #c0c0ff;
-    font-family: 'Courier New', monospace;
+* {
     margin: 0;
-    padding: 16px;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+body {
+    background: #070710;
+    color: #c8d6ff;
+    font-family: 'Source Code Pro', monospace;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    background-image: 
+        radial-gradient(circle at 50% 20%, #1a1a40 0%, #070710 60%),
+        linear-gradient(180deg, #0d0d2b 0%, #050510 100%);
+    background-attachment: fixed;
+}
+
+/* Фоновая сетка */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(70, 70, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(70, 70, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#app {
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(2px);
+}
+
+.neon-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 0 10px #4a4aff, 0 0 20px #4a4aff, 0 0 30px #1e1eaa;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
 header {
     text-align: center;
-    border-bottom: 1px solid #4a4aff;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid rgba(74, 74, 255, 0.4);
+    padding-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(74, 74, 255, 0.2);
 }
-#rank {
-    font-size: 1.2em;
+
+.rank-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #1a1a3e, #0d0d2b);
+    border: 1px solid #ffd700;
     color: #ffd700;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    margin-top: 8px;
 }
+
+.panel {
+    background: rgba(10, 10, 30, 0.8);
+    border: 1px solid #2a2a5a;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(74, 74, 255, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.panel:hover {
+    border-color: #4a4aff;
+    box-shadow: 0 0 25px rgba(74, 74, 255, 0.3);
+}
+
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    color: #aaccff;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #2a2a5a;
+    padding-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.stat-label {
+    color: #8899cc;
+}
+
+.stat-value {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.streak-fire {
+    color: #ff8844;
+    font-weight: bold;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #1a1a3e;
+    border-radius: 4px;
+    margin-top: 12px;
+    overflow: hidden;
+    border: 1px solid #2a2a5a;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a4aff, #6a6aff);
+    width: 0%;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px #4a4aff;
+    border-radius: 4px;
+}
+
 .quest-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1a1a2e;
+    background: rgba(20, 20, 50, 0.7);
     margin: 8px 0;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid #4a4aff;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #2a2a5a;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
-.completed {
-    border-left-color: #00ff88;
-    opacity: 0.7;
+
+.quest-item:not(.completed):hover {
+    border-color: #4a4aff;
+    box-shadow: 0 0 15px rgba(74, 74, 255, 0.2);
+    transform: translateY(-1px);
 }
-button {
-    background: #4a4aff;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-family: inherit;
+
+.quest-item.completed {
+    border-color: #00cc66;
+    background: rgba(0, 204, 102, 0.08);
+    box-shadow: 0 0 10px rgba(0, 204, 102, 0.2);
+}
+
+.quest-item.completed span:first-child {
+    text-decoration: line-through;
+    color: #88ccaa;
+}
+
+.quest-item button {
+    background: transparent;
+    border: 1px solid #4a4aff;
+    color: #aaccff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.85rem;
     cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
 }
-button:active {
-    background: #6a6aff;
+
+.quest-item button:active {
+    background: #4a4aff;
+    color: white;
+    box-shadow: 0 0 12px #4a4aff;
+    transform: scale(0.96);
+}
+
+.quest-item.completed button {
+    border-color: #00cc66;
+    color: #00cc66;
+    background: transparent;
+    cursor: default;
+}
+
+/* Системное сообщение */
+#system-message {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    background: rgba(5, 5, 20, 0.95);
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    padding: 25px 30px;
+    color: #ffd700;
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    z-index: 100;
+    display: none;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+    max-width: 90vw;
+}
+
+#system-message.show {
+    display: block;
+}
+
+#system-message .msg-text {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+#system-message button {
+    background: #ffd700;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#system-message button:active {
+    background: #ffea70;
+    transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -40%); }
+    to { opacity: 1; transform: translate(-50%, -20%); }
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #445577;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+@media (max-width: 400px) {
+    .neon-text {
+        font-size: 1.5rem;
+    }
 }
