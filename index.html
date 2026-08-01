@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Система Охотника</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>⚔️ Система Охотника</h1>
+            <div id="rank">Ранг: E</div>
+        </header>
+        <main>
+            <section id="daily-quests">
+                <h2>📋 Ежедневные задания</h2>
+                <ul id="quest-list"></ul>
+            </section>
+            <section id="stats">
+                <h2>📊 Статистика</h2>
+                <p>Уровень: <span id="level">1</span></p>
+                <p>Опыт: <span id="exp">0</span>/100</p>
+                <p>Дней подряд: <span id="streak">0</span></p>
+            </section>
+        </main>
+        <footer>
+            <small>Только ты решаешь, станешь ли сильнее</small>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

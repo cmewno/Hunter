@@ -1,0 +1,42 @@
+body {
+    background: #0a0a0f;
+    color: #c0c0ff;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 16px;
+}
+header {
+    text-align: center;
+    border-bottom: 1px solid #4a4aff;
+    margin-bottom: 20px;
+}
+#rank {
+    font-size: 1.2em;
+    color: #ffd700;
+}
+.quest-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a2e;
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #4a4aff;
+}
+.completed {
+    border-left-color: #00ff88;
+    opacity: 0.7;
+}
+button {
+    background: #4a4aff;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: inherit;
+    cursor: pointer;
+}
+button:active {
+    background: #6a6aff;
+}
