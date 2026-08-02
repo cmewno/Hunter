@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Система Охотника</title>
-    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
@@ -16,7 +15,7 @@
 </head>
 <body>
     <div id="app">
-        <!-- Системное сообщение (вместо alert) -->
+        <!-- Системное сообщение -->
         <div id="system-message" class="hidden">
             <div class="msg-text"></div>
             <button>Принять</button>
@@ -47,6 +46,27 @@
                 </div>
                 <div class="progress-bar">
                     <div id="exp-bar" class="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <!-- Новый блок характеристик -->
+                <div class="attributes-section">
+                    <h3>✨ Характеристики</h3>
+                    <div id="attr-points" class="attr-points">Доступно очков: 0</div>
+                    <div class="attr-row">
+                        <span class="attr-label">💪 Сила</span>
+                        <span id="attr-strength" class="attr-value">0</span>
+                        <button class="attr-btn" data-attr="strength">+</button>
+                    </div>
+                    <div class="attr-row">
+                        <span class="attr-label">🧠 Интеллект</span>
+                        <span id="attr-intelligence" class="attr-value">0</span>
+                        <button class="attr-btn" data-attr="intelligence">+</button>
+                    </div>
+                    <div class="attr-row">
+                        <span class="attr-label">🏃 Выносливость</span>
+                        <span id="attr-endurance" class="attr-value">0</span>
+                        <button class="attr-btn" data-attr="endurance">+</button>
+                    </div>
                 </div>
             </section>
         </main>
