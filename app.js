@@ -1,15 +1,15 @@
 // ========== ПУЛ ЕЖЕДНЕВНЫХ ЗАДАНИЙ ==========
 const QUEST_POOL = [
-    { id: 'pushups', name: 'Отжимания 3x20', exp: 30 },
+    { id: 'pushups', name: 'Отжимания 3x15', exp: 30 },
     { id: 'squats', name: 'Приседания 3x25', exp: 25 },
-    { id: 'pullups', name: 'Турник 3x8 (или подтягивания)', exp: 35 },
+    { id: 'pullups', name: 'Турник 3x5 (или подтягивания)', exp: 35 },
     { id: 'abs', name: 'Пресс 3x30', exp: 25 },
     { id: 'plank', name: 'Планка 2 минуты', exp: 20 },
-    { id: 'reading', name: 'Прочитать 20 страниц', exp: 20 },
+    { id: 'reading', name: 'Прочитать 10 страниц', exp: 20 },
     { id: 'water', name: 'Выпить 2 литра воды', exp: 15 },
     { id: 'meditation', name: 'Медитация 10 минут', exp: 20 },
-    { id: 'stretching', name: 'Растяжка 15 минут', exp: 15 },
-    { id: 'jump_rope', name: 'Скакалка 5 минут', exp: 20 },
+    { id: 'stretching', name: 'Растяжка 5 минут', exp: 15 },
+    { id: 'jump_rope', name: 'Скакалка 2 минут', exp: 20 },
     { id: 'learning', name: 'Учить что-то новое 20 минут', exp: 25 },
     { id: 'cleaning', name: 'Уборка 15 минут', exp: 10 }
 ];
