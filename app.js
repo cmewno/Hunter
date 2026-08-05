@@ -1,4 +1,4 @@
-// ========== ПУЛ ВСЕХ ВОЗМОЖНЫХ ЗАДАНИЙ ==========
+// ========== ПУЛ ЕЖЕДНЕВНЫХ ЗАДАНИЙ ==========
 const QUEST_POOL = [
     { id: 'pushups', name: 'Отжимания 3x20', exp: 30 },
     { id: 'squats', name: 'Приседания 3x25', exp: 25 },
@@ -14,23 +14,65 @@ const QUEST_POOL = [
     { id: 'cleaning', name: 'Уборка 15 минут', exp: 10 }
 ];
 
-const DAILY_QUESTS_COUNT = 5; // сколько заданий в день
+const DAILY_QUESTS_COUNT = 5;
+
+// ========== ТРЕНИРОВОЧНЫЙ ПЛАН ==========
+const TRAINING_PLAN = {
+    1: { // Понедельник
+        name: 'Грудь + Спина',
+        exercises: [
+            'Разминка: 5 минут (вращения плеч, локтей, легкие отжимания, вис на турнике)',
+            'Подтягивания широким хватом — 4×6–10',
+            'Жим гантелей лежа на скамье — 4×8–12',
+            'Тяга гантели в наклоне одной рукой — 4×10–12 на каждую руку',
+            'Разведение гантелей лежа — 3×10–15',
+            'Горизонтальные подтягивания или тяга двух гантелей в наклоне — 3×10–12',
+            'Планка — 3×45–60 секунд'
+        ]
+    },
+    2: { // Вторник
+        name: 'Плечи + Руки',
+        exercises: [
+            'Разминка: 5 минут',
+            'Жим гантелей сидя — 4×8–12',
+            'Подъем гантелей в стороны — 3×12–15',
+            'Подъем гантелей на бицепс — 4×8–12',
+            'Молотковые сгибания — 3×10–12',
+            'Французский жим гантели сидя — 4×10–12',
+            'Обратные отжимания от скамьи — 3×12–15'
+        ]
+    },
+    5: { // Пятница
+        name: 'Верх тела (силовой день)',
+        exercises: [
+            'Разминка: 5 минут',
+            'Подтягивания с доп. весом или обычные — 5×5–8',
+            'Жим гантелей лежа тяжелее — 5×5–8',
+            'Тяга двух гантелей в наклоне — 4×8–10',
+            'Жим гантелей сидя — 3×8–10',
+            'Подъем гантелей на бицепс — 3×8–10',
+            'Французский жим — 3×8–10'
+        ]
+    }
+};
 
 // ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ==========
 if (!localStorage.getItem('user')) {
     const defaultUser = {
         level: 1,
         exp: 0,
+        gold: 0,
         rank: 'E',
         streak: 0,
         lastDate: '',
         questsCompletedToday: [],
-        dailyQuests: [],       // сегодняшний список заданий
-        statPoints: 0,        // очки характеристик
+        dailyQuests: [],
+        statPoints: 0,
         strength: 0,
         intelligence: 0,
         endurance: 0,
-        allDoneToday: false   // флаг, что уже получал очки за всё
+        allDoneToday: false,
+        trainingCompletedToday: false   // новая отметка о тренировке
     };
     localStorage.setItem('user', JSON.stringify(defaultUser));
 }
@@ -39,7 +81,6 @@ let user = JSON.parse(localStorage.getItem('user'));
 
 // ========== ГЕНЕРАЦИЯ СЛУЧАЙНЫХ ЗАДАНИЙ ==========
 function generateDailyQuests() {
-    // Перемешиваем пул и берём первые DAILY_QUESTS_COUNT
     const shuffled = [...QUEST_POOL].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, DAILY_QUESTS_COUNT);
 }
@@ -51,15 +92,13 @@ if (user.lastDate !== today) {
     if (user.lastDate !== yesterday) {
         user.streak = 0;
     }
-    // Сбрасываем на новый день
     user.lastDate = today;
     user.questsCompletedToday = [];
     user.dailyQuests = generateDailyQuests();
     user.allDoneToday = false;
-    // Очки характеристик не сбрасываем, они копятся
+    user.trainingCompletedToday = false;  // сброс тренировки
     saveUser();
 } else if (!user.dailyQuests || user.dailyQuests.length === 0) {
-    // Если почему-то пустой список (первый запуск сегодня)
     user.dailyQuests = generateDailyQuests();
     saveUser();
 }
@@ -69,7 +108,7 @@ function saveUser() {
     localStorage.setItem('user', JSON.stringify(user));
 }
 
-// ========== ОПРЕДЕЛЕНИЕ РАНГА ==========
+// ========== РАНГ ==========
 function calculateRank() {
     if (user.level >= 50) return 'S';
     if (user.level >= 30) return 'A';
@@ -100,12 +139,12 @@ function completeQuest(questId) {
     if (user.questsCompletedToday.includes(questId)) return;
     
     const quest = user.dailyQuests.find(q => q.id === questId);
-    if (!quest) return; // такого задания нет в сегодняшнем списке
+    if (!quest) return;
     
     user.exp += quest.exp;
+    user.gold += quest.exp;
     user.questsCompletedToday.push(questId);
     
-    // Проверка повышения уровня
     const expForNextLevel = user.level * 100;
     if (user.exp >= expForNextLevel) {
         user.exp -= expForNextLevel;
@@ -114,16 +153,38 @@ function completeQuest(questId) {
         showSystemMessage(`⚡ Уровень повышен до ${user.level}. Ранг: ${user.rank}`);
     }
     
-    // Проверка, все ли задания выполнены сегодня
     if (!user.allDoneToday && user.questsCompletedToday.length === user.dailyQuests.length) {
-        // Награда: +1 очко характеристик
         user.statPoints += 1;
         user.allDoneToday = true;
-        // Обновляем стрик (только если раньше не учтён)
+        showSystemMessage('🎯 Все задания дня выполнены! Получено 1 очко характеристик.');
         if (user.streak === 0 || user.lastDate !== today) {
             user.streak++;
         }
-        showSystemMessage('🎯 Все задания дня выполнены! Получено 1 очко характеристик.');
+    }
+    
+    saveUser();
+    render();
+}
+
+// ========== ТРЕНИРОВКА ==========
+function completeTraining() {
+    if (user.trainingCompletedToday) return;
+    
+    const trainingRewardExp = 100;
+    const trainingRewardGold = 50;
+    
+    user.exp += trainingRewardExp;
+    user.gold += trainingRewardGold;
+    user.trainingCompletedToday = true;
+    
+    const expForNextLevel = user.level * 100;
+    if (user.exp >= expForNextLevel) {
+        user.exp -= expForNextLevel;
+        user.level++;
+        user.rank = calculateRank();
+        showSystemMessage(`⚡ Уровень повышен до ${user.level}. Ранг: ${user.rank}`);
+    } else {
+        showSystemMessage(`🏋️ Тренировка завершена! +${trainingRewardExp} опыта, +${trainingRewardGold} золота.`);
     }
     
     saveUser();
@@ -149,17 +210,14 @@ function render() {
     document.getElementById('streak').textContent = `🔥 ${user.streak}`;
     document.getElementById('rank').textContent = `Ранг: ${user.rank}`;
     
-    // Прогресс-бар опыта
     const expPercent = (user.exp / (user.level * 100)) * 100;
     document.getElementById('exp-bar').style.width = expPercent + '%';
     
-    // Характеристики
     document.getElementById('attr-strength').textContent = user.strength;
     document.getElementById('attr-intelligence').textContent = user.intelligence;
     document.getElementById('attr-endurance').textContent = user.endurance;
     document.getElementById('attr-points').textContent = `Доступно очков: ${user.statPoints}`;
     
-    // Кнопки распределения
     const buttons = document.querySelectorAll('.attr-btn');
     buttons.forEach(btn => {
         if (user.statPoints > 0) {
@@ -171,7 +229,7 @@ function render() {
         }
     });
     
-    // Список заданий
+    // Ежедневные задания
     const questList = document.getElementById('quest-list');
     questList.innerHTML = user.dailyQuests.map(quest => {
         const completed = user.questsCompletedToday.includes(quest.id);
@@ -185,6 +243,31 @@ function render() {
             </li>
         `;
     }).join('');
+    
+    // Тренировочная панель
+    const trainingPanel = document.getElementById('training-panel');
+    const trainingContent = document.getElementById('training-content');
+    const completeBtn = document.getElementById('complete-training');
+    
+    const dayOfWeek = new Date().getDay(); // 1 = ПН, 2 = ВТ, ..., 5 = ПТ
+    const todayTraining = TRAINING_PLAN[dayOfWeek];
+    
+    if (todayTraining) {
+        trainingPanel.classList.remove('hidden');
+        trainingContent.innerHTML = `
+            <p style="color:#ffaa00; margin-bottom:10px;">📅 ${todayTraining.name}</p>
+            ${todayTraining.exercises.map(ex => `<div class="training-exercise">${ex}</div>`).join('')}
+        `;
+        if (user.trainingCompletedToday) {
+            completeBtn.textContent = '✅ Тренировка выполнена';
+            completeBtn.disabled = true;
+        } else {
+            completeBtn.textContent = '✅ Завершить тренировку (+100 XP, +50 💰)';
+            completeBtn.disabled = false;
+        }
+    } else {
+        trainingPanel.classList.add('hidden');
+    }
 }
 
 // ========== НАЗНАЧАЕМ ОБРАБОТЧИКИ НА КНОПКИ ХАРАКТЕРИСТИК ==========

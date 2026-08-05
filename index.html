@@ -26,10 +26,20 @@
             <div id="rank" class="rank-badge">Ранг: E</div>
         </header>
         <main>
+            <!-- Ежедневные задания -->
             <section id="daily-quests" class="panel">
                 <h2>📋 Ежедневные задания</h2>
                 <ul id="quest-list"></ul>
             </section>
+
+            <!-- Тренировка дня (показывается только в ПН/ВТ/ПТ) -->
+            <section id="training-panel" class="panel training-panel hidden">
+                <h2>🏋️ Тренировка дня</h2>
+                <div id="training-content"></div>
+                <button id="complete-training" onclick="completeTraining()">✅ Завершить тренировку</button>
+            </section>
+
+            <!-- Статистика -->
             <section id="stats" class="panel">
                 <h2>📊 Статистика</h2>
                 <div class="stat-row">
@@ -48,7 +58,7 @@
                     <div id="exp-bar" class="progress-fill" style="width: 0%"></div>
                 </div>
 
-                <!-- Новый блок характеристик -->
+                <!-- Характеристики -->
                 <div class="attributes-section">
                     <h3>✨ Характеристики</h3>
                     <div id="attr-points" class="attr-points">Доступно очков: 0</div>

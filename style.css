@@ -257,7 +257,7 @@ footer {
     font-style: italic;
 }
 
-/* Стили для характеристик */
+/* Характеристики */
 .attributes-section {
     margin-top: 20px;
     border-top: 1px solid #2a2a5a;
@@ -326,6 +326,48 @@ footer {
 .attr-btn:disabled {
     opacity: 0.4;
     border-color: #555;
+    cursor: not-allowed;
+}
+
+/* Тренировочная панель */
+.training-panel.hidden {
+    display: none;
+}
+
+.training-panel {
+    border-color: #ff6600;
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+}
+
+.training-exercise {
+    padding: 8px 0;
+    border-bottom: 1px solid #2a2a5a;
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+#complete-training {
+    background: #ff6600;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 15px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#complete-training:active {
+    background: #ff8822;
+    transform: scale(0.98);
+}
+
+#complete-training:disabled {
+    background: #555;
+    color: #999;
     cursor: not-allowed;
 }
 
