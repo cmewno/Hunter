@@ -56,9 +56,13 @@ const TRAINING_PLAN = {
     }
 };
 
-// ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ==========
-if (!localStorage.getItem('user')) {
-    const defaultUser = {
+// ========== ЗАГРУЗКА И МИГРАЦИЯ ДАННЫХ ==========
+function loadUser() {
+    let saved = localStorage.getItem('user');
+    let user = saved ? JSON.parse(saved) : null;
+
+    // Значения по умолчанию для всех полей
+    const defaults = {
         level: 1,
         exp: 0,
         gold: 0,
@@ -72,12 +76,25 @@ if (!localStorage.getItem('user')) {
         intelligence: 0,
         endurance: 0,
         allDoneToday: false,
-        trainingCompletedToday: false   // новая отметка о тренировке
+        trainingCompletedToday: false
     };
-    localStorage.setItem('user', JSON.stringify(defaultUser));
+
+    if (!user) {
+        // Новый пользователь
+        user = { ...defaults };
+    } else {
+        // Добавляем отсутствующие поля (миграция старых данных)
+        for (let key in defaults) {
+            if (user[key] === undefined) {
+                user[key] = defaults[key];
+            }
+        }
+    }
+
+    return user;
 }
 
-let user = JSON.parse(localStorage.getItem('user'));
+let user = loadUser();
 
 // ========== ГЕНЕРАЦИЯ СЛУЧАЙНЫХ ЗАДАНИЙ ==========
 function generateDailyQuests() {
@@ -96,7 +113,7 @@ if (user.lastDate !== today) {
     user.questsCompletedToday = [];
     user.dailyQuests = generateDailyQuests();
     user.allDoneToday = false;
-    user.trainingCompletedToday = false;  // сброс тренировки
+    user.trainingCompletedToday = false;
     saveUser();
 } else if (!user.dailyQuests || user.dailyQuests.length === 0) {
     user.dailyQuests = generateDailyQuests();
